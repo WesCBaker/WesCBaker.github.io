@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wes Baker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: #fff; color: #111;
+    font-family: 'Inter', -apple-system, system-ui, sans-serif;
+    font-size: 16px; line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  .wrap { max-width: 1020px; margin: 0 auto; padding: 0 48px; }
+  @media(max-width:600px){ .wrap { padding: 0 22px; } }
+
+  /* FADE */
+  .f { opacity: 0; transform: translateY(14px); transition: opacity .55s ease, transform .55s ease; }
+  .f.on { opacity: 1; transform: none; }
+  .d2{transition-delay:.1s} .d3{transition-delay:.2s} .d4{transition-delay:.3s}
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    height: 60px; display: flex; align-items: center;
+    justify-content: space-between; padding: 0 48px;
+    background: rgba(255,255,255,.96); border-bottom: 1px solid transparent;
+    transition: border-color .3s;
+  }
+  nav.sc { border-bottom-color: #eee; }
+  .nl { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 400; color: #111; }
+  .nav-right { display: flex; align-items: center; gap: 28px; }
+  .nr { display: flex; gap: 28px; list-style: none; }
+  .nr a { font-size: 13px; font-weight: 500; color: #888; transition: color .2s; }
+  .nr a:hover { color: #111; }
+  /* Headshot in nav */
+  .nav-headshot {
+    width: 34px; height: 34px; border-radius: 50%;
+    object-fit: cover; object-position: top;
+    border: 2px solid #eee;
+    display: block;
+  }
+  .nav-headshot-placeholder {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: #f0f0f0; border: 2px solid #eee;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: #bbb;
+  }
+  @media(max-width:640px){ .nr{display:none;} nav{padding:0 22px;} }
+
+  /* HERO */
+  #hero { padding: 148px 0 84px; border-bottom: 1px solid #f0f0f0; }
+  .h-label { font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: #bbb; margin-bottom: 20px; }
+  .h-name { font-family: 'Playfair Display', serif; font-size: clamp(52px, 9vw, 102px); font-weight: 400; line-height: .98; letter-spacing: -3px; color: #111; margin-bottom: 28px; }
+  .h-sub { font-size: 18px; color: #666; max-width: 520px; line-height: 1.8; margin-bottom: 38px; }
+  .h-sub strong { color: #111; font-weight: 600; }
+  .h-btns { display: flex; gap: 11px; flex-wrap: wrap; margin-bottom: 64px; }
+  .b1 { display:inline-block; padding:12px 22px; background:#111; color:#fff; font-size:13px; font-weight:600; border:2px solid #111; transition:background .2s; }
+  .b1:hover { background:#1a3050; border-color:#1a3050; }
+  .b2 { display:inline-block; padding:12px 22px; background:transparent; color:#777; font-size:13px; font-weight:600; border:2px solid #ddd; transition:border-color .2s,color .2s; }
+  .b2:hover { border-color:#111; color:#111; }
+  .h-stats { display:flex; gap:48px; flex-wrap:wrap; padding-top:36px; border-top:1px solid #f0f0f0; }
+  .sn { font-family:'Playfair Display',serif; font-size:36px; font-weight:400; color:#111; display:block; line-height:1; margin-bottom:5px; }
+  .sl { font-size:12px; font-weight:500; color:#bbb; }
+
+  /* SECTION PIECES */
+  .sec { padding: 92px 0; }
+  .sec-lbl { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #bbb; margin-bottom: 16px; display: block; }
+  .sec-h { font-family: 'Playfair Display', serif; font-size: clamp(26px, 3.8vw, 40px); font-weight: 400; letter-spacing: -.4px; line-height: 1.2; color: #111; }
+  .sec-note { font-size: 14px; color: #aaa; line-height: 1.6; margin-top: 8px; }
+  hr.div { border: none; border-top: 1px solid #f0f0f0; }
+
+  /* ABOUT */
+  #about { background: #fafaf8; }
+  .about-intro { margin-bottom: 48px; max-width: 740px; }
+  .about-intro .sec-h { margin-bottom: 0; }
+  .about-cols { display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:start; }
+  @media(max-width:720px){ .about-cols{grid-template-columns:1fr;gap:24px;} }
+  .ap { font-size: 15px; color: #666; line-height: 1.9; margin-bottom: 18px; }
+  .ap strong { color: #111; font-weight: 600; }
+  .ap:last-of-type { margin-bottom: 0; }
+  .sk-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:28px; padding-top:24px; border-top:1px solid #e8e8e8; }
+  .sk { font-size:12px; font-weight:600; color:#555; background:#fff; border:1px solid #e0e0e0; padding:5px 11px; }
+
+  /* EXPERIENCE */
+  #experience { background: #fff; }
+  .exp-hd { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:52px; flex-wrap:wrap; gap:16px; }
+  .exp-hd-note { font-size:13px; color:#bbb; max-width:300px; line-height:1.55; text-align:right; }
+
+  .ei {
+    display:grid; grid-template-columns:196px 1fr;
+    gap:36px; padding:36px 0; border-top:1px solid #f0f0f0;
+  }
+  .ei:last-child { border-bottom: 1px solid #f0f0f0; }
+  @media(max-width:680px){ .ei{grid-template-columns:1fr;gap:12px;} }
+  .ed { font-size:12px; font-weight:600; color:#ccc; margin-bottom:5px; letter-spacing:.2px; }
+  .eo { font-size:13px; font-weight:600; color:#555; line-height:1.4; margin-bottom:14px; }
+
+  /* Experience image */
+  .exp-img {
+    width: 100%; aspect-ratio: 3/2; object-fit: cover;
+    object-position: center; display: block;
+    border: 1px solid #f0f0f0;
+  }
+  .exp-img-logo {
+    width: 100%; max-height: 60px; object-fit: contain;
+    object-position: left center; display: block;
+    margin-bottom: 4px;
+  }
+  .exp-img-contain {
+    width: 100%; height: 80px; object-fit: contain;
+    object-position: center; display: block;
+    margin-bottom: 8px;
+  }
+
+  .er { font-family:'Playfair Display',serif; font-size:19px; font-weight:400; color:#111; margin-bottom:8px; line-height:1.3; }
+  .eb { font-size:14px; color:#777; line-height:1.85; margin-bottom:10px; max-width:560px; }
+  .eb strong { color:#111; font-weight:600; }
+  .eb:last-of-type { margin-bottom:0; }
+  .ch { display:flex; flex-wrap:wrap; gap:6px; margin-top:11px; }
+  .c { font-size:11px; font-weight:600; letter-spacing:.5px; text-transform:uppercase; color:#aaa; background:#f7f7f7; padding:3px 8px; }
+
+  /* VIDEO */
+  #video { background: #0f2342; padding: 84px 0; }
+  .vl { font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,.3); margin-bottom:14px; display:block; }
+  .vh { font-family:'Playfair Display',serif; font-size:clamp(24px,4vw,40px); font-weight:400; color:#fff; letter-spacing:-.4px; margin-bottom:10px; }
+  .vs { font-size:15px; color:rgba(255,255,255,.4); max-width:480px; line-height:1.7; margin-bottom:40px; }
+  .vb { position:relative; padding-bottom:56.25%; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); overflow:hidden; max-width:860px; }
+  .vb iframe { position:absolute; top:0; left:0; width:100%; height:100%; border:none; }
+
+  /* ROTATING QUOTE TICKER */
+  .quote-ticker {
+    background: #fafaf8;
+    border-top: 1px solid #f0f0f0;
+    border-bottom: 1px solid #f0f0f0;
+    padding: 28px 0;
+    overflow: hidden;
+    position: relative;
+  }
+  .ticker-inner {
+    display: flex;
+    gap: 80px;
+    align-items: center;
+    white-space: nowrap;
+    animation: ticker 28s linear infinite;
+  }
+  .ticker-inner:hover { animation-play-state: paused; }
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .ticker-quote {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-style: italic;
+    color: #777;
+    flex-shrink: 0;
+  }
+  .ticker-sep {
+    color: #ddd;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  /* GROWTH */
+  #growth { background: #fff; }
+  .g-intro { display:grid; grid-template-columns:1fr 1fr; gap:72px; margin-bottom:56px; align-items:start; }
+  @media(max-width:760px){ .g-intro{grid-template-columns:1fr;gap:24px;} }
+  .g-intro-text { font-size:15px; color:#666; line-height:1.85; }
+  .g-intro-text p { margin-bottom:14px; }
+  .g-intro-text p:last-child { margin-bottom:0; }
+  .g-intro-text strong { color:#111; font-weight:600; }
+
+  .g-block { background:#fafaf8; border:1px solid #ebebeb; padding:32px; margin-bottom:16px; }
+  .g-block h3 { font-family:'Playfair Display',serif; font-size:20px; font-weight:400; color:#111; margin-bottom:10px; }
+  .g-block p { font-size:14px; color:#666; line-height:1.85; }
+  .g-block p strong { color:#111; font-weight:600; }
+  .g-block p + p { margin-top:12px; }
+
+  /* Values */
+  .values-grid { display:flex; flex-wrap:wrap; gap:10px; margin-top:20px; }
+  .val-chip { font-size:13px; font-weight:600; color:#111; background:#fff; border:1.5px solid #e0e0e0; padding:7px 14px; }
+  .val-chip.primary { border-color:#111; }
+
+  /* BCS */
+  .bcs-wrap { background:#fafaf8; border:1px solid #ebebeb; padding:36px; margin-bottom:16px; }
+  .bcs-grid { display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:start; }
+  @media(max-width:720px){ .bcs-grid{grid-template-columns:1fr;} }
+  .bcs-name { font-family:'Playfair Display',serif; font-size:32px; font-weight:400; color:#111; line-height:1; margin-bottom:6px; }
+  .bcs-sub { font-size:13px; color:#aaa; margin-bottom:24px; }
+  .score-pair { display:flex; gap:16px; margin-bottom:20px; }
+  .score-box { flex:1; border:1px solid #ebebeb; padding:14px 16px; background:#fff; }
+  .score-lbl { font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:#bbb; margin-bottom:5px; }
+  .score-num { font-family:'Playfair Display',serif; font-size:28px; font-weight:400; color:#111; line-height:1; }
+  .score-num.neg { color:#888; }
+  .score-meaning { font-size:11px; color:#bbb; margin-top:4px; line-height:1.4; }
+  .bcs-text { font-size:14px; color:#666; line-height:1.85; }
+  .bcs-text strong { color:#111; font-weight:600; }
+  .bcs-text p + p { margin-top:12px; }
+
+  /* Quadrant */
+  .quad-label { font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:#bbb; text-align:center; margin-bottom:8px; }
+  .quad { display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; border:1px solid #ebebeb; height:190px; }
+  .qc { display:flex; flex-direction:column; justify-content:center; align-items:center; padding:10px; font-size:12px; font-weight:500; color:#ccc; text-align:center; line-height:1.3; border:1px solid #f5f5f5; position:relative; }
+  .qc.active { background:#0f2342; color:#fff; }
+  .qc-n { font-size:13px; font-weight:700; margin-bottom:2px; }
+  .qc-s { font-size:10px; opacity:.65; }
+  .qc-dot { position:absolute; top:7px; right:7px; width:6px; height:6px; background:#c44b1a; border-radius:50%; }
+  .quad-label-b { font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:#bbb; text-align:center; margin-top:8px; }
+
+  /* Adjectives */
+  .adj-wrap { background:#fafaf8; border:1px solid #ebebeb; padding:32px; margin-bottom:16px; }
+  .adj-wrap h3 { font-family:'Playfair Display',serif; font-size:20px; font-weight:400; color:#111; margin-bottom:16px; }
+  .adj-cloud { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+  .aw { font-weight:600; color:#111; line-height:1.2; }
+  .aw7{font-size:26px;} .aw6{font-size:21px;} .aw5{font-size:17px;}
+  .aw4{font-size:14px;color:#444;} .aw3{font-size:12px;color:#888;font-weight:500;}
+  .aw2{font-size:11px;color:#bbb;font-weight:500;}
+  .adj-note { font-size:12px; color:#bbb; margin-top:14px; padding-top:12px; border-top:1px solid #f0f0f0; }
+
+  /* WCC */
+  .wcc-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-bottom:16px; }
+  @media(max-width:760px){ .wcc-grid{grid-template-columns:1fr;} }
+  .wcc-card { background:#0f2342; padding:26px; }
+  .wcc-dim { font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,.3); margin-bottom:7px; }
+  .wcc-rating { font-family:'Playfair Display',serif; font-size:22px; font-weight:400; color:#fff; margin-bottom:10px; }
+  .wcc-text { font-size:13px; color:rgba(255,255,255,.5); line-height:1.75; }
+
+  /* Team Culture */
+  .tc-block { background:#fafaf8; border:1px solid #ebebeb; padding:32px; margin-bottom:16px; }
+  .tc-block h3 { font-family:'Playfair Display',serif; font-size:20px; font-weight:400; color:#111; margin-bottom:10px; }
+  .tc-block p { font-size:14px; color:#666; line-height:1.85; margin-bottom:12px; }
+  .tc-block p:last-of-type { margin-bottom:0; }
+  .tc-block p strong { color:#111; font-weight:600; }
+
+  /* Conscious Competency */
+  .cc-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  @media(max-width:680px){ .cc-grid{grid-template-columns:1fr;} }
+  .cc-card { border:1px solid #ebebeb; padding:20px; background:#fff; }
+  .cc-stage { font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:#bbb; margin-bottom:7px; }
+  .cc-title { font-size:14px; font-weight:600; color:#111; margin-bottom:7px; }
+  .cc-body { font-size:13px; color:#777; line-height:1.75; }
+
+  /* PORTFOLIO */
+  #portfolio { background: #fafaf8; }
+  .port-hd { margin-bottom:44px; }
+  .port-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  @media(max-width:680px){ .port-grid{grid-template-columns:1fr;} }
+  .pc { border:1px solid #ebebeb; padding:28px; background:#fff; transition:border-color .2s; }
+  .pc:hover { border-color:#bbb; }
+  .pc-cat { font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:#aaa; margin-bottom:8px; }
+  .pc-name { font-family:'Playfair Display',serif; font-size:18px; font-weight:400; color:#111; margin-bottom:8px; line-height:1.35; }
+  .pc-desc { font-size:14px; color:#777; line-height:1.8; margin-bottom:14px; }
+  .pc-tags { display:flex; flex-wrap:wrap; gap:6px; }
+  .pt { font-size:11px; font-weight:600; color:#aaa; padding:3px 9px; border:1px solid #eee; }
+
+  /* CONTACT */
+  #contact { background: #111; padding: 88px 0; }
+  .cg { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start; }
+  @media(max-width:720px){ .cg{grid-template-columns:1fr;gap:44px;} }
+  .ch2 { font-family:'Playfair Display',serif; font-size:clamp(28px,5vw,50px); font-weight:400; letter-spacing:-.5px; line-height:1.12; color:#fff; margin-bottom:16px; }
+  .cp { font-size:15px; color:rgba(255,255,255,.4); line-height:1.8; margin-bottom:28px; }
+  .clinks { display:flex; flex-direction:column; gap:11px; }
+  .clink { display:flex; align-items:center; gap:10px; font-size:14px; font-weight:500; color:rgba(255,255,255,.5); transition:color .2s; }
+  .clink:hover { color:#fff; }
+  .cdot { width:4px; height:4px; background:#c44b1a; border-radius:50%; flex-shrink:0; }
+  form { display:flex; flex-direction:column; gap:10px; }
+  .f2r { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media(max-width:460px){ .f2r{grid-template-columns:1fr;} }
+  input, textarea { font-family:'Inter',sans-serif; font-size:14px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); color:#fff; padding:12px 14px; outline:none; transition:border-color .2s; width:100%; }
+  input:focus, textarea:focus { border-color:rgba(255,255,255,.35); }
+  input::placeholder, textarea::placeholder { color:rgba(255,255,255,.22); }
+  textarea { min-height:110px; resize:vertical; }
+  .fsub { width:100%; padding:13px; background:transparent; border:1.5px solid rgba(255,255,255,.18); color:#fff; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; cursor:pointer; transition:background .2s,border-color .2s; }
+  .fsub:hover { background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.4); }
+
+  /* FOOTER */
+  footer { background:#0a0a0a; padding:20px 48px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; border-top:1px solid rgba(255,255,255,.06); }
+  .ft { font-size:12px; color:rgba(255,255,255,.2); }
+  .ft a { color:rgba(255,255,255,.3); transition:color .2s; }
+  .ft a:hover { color:rgba(255,255,255,.6); }
+
+  /* inline pull quote */
+  .pull { border-left:3px solid #e0e0e0; padding:18px 22px; margin:24px 0; font-family:'Playfair Display',serif; font-size:16px; font-style:italic; font-weight:400; color:#555; line-height:1.65; }
+  .pull-attr { font-family:'Inter',sans-serif; font-size:11px; font-weight:600; font-style:normal; letter-spacing:1px; text-transform:uppercase; color:#bbb; margin-top:8px; display:block; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a class="nl" href="#hero">Wes Baker</a>
+  <div class="nav-right">
+    <ul class="nr">
+      <li><a href="#about">About</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#video">Video</a></li>
+      <li><a href="#growth">Growth</a></li>
+      <li><a href="#portfolio">Work</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <!--
+      HEADSHOT: Replace the placeholder below with:
+      <img src="./headshot.jpg" alt="Wes Baker" class="nav-headshot">
+      after uploading your headshot photo to the GitHub repo as "headshot.jpg"
+    -->
+    <div class="nav-headshot-placeholder">WB</div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="wrap">
+    <p class="h-label f">Business Analytics &middot; Eller College of Management &middot; University of Arizona</p>
+    <h1 class="h-name f d2">Wes Baker.</h1>
+    <p class="h-sub f d2">
+      Junior at Eller. <strong>Incoming intern at FinTurk.io</strong> this summer
+      in Chicago across software development, automation, and analytics.
+      Someone who has managed people, built systems, and led organizations
+      &mdash; and is building the technical depth to match.
+    </p>
+    <div class="h-btns f d3">
+      <a class="b1" href="#video">Watch my story</a>
+      <a class="b2" href="#contact">Get in touch</a>
+    </div>
+    <div class="h-stats f d3">
+      <div><span class="sn" data-count="100">0</span><span class="sl">Employees managed</span></div>
+      <div><span class="sn" data-count="3">0</span><span class="sl">Years in leadership</span></div>
+      <div><span class="sn">2</span><span class="sl">Technical internships</span></div>
+      <div><span class="sn">R, SQL, C++</span><span class="sl">Core technical stack</span></div>
+    </div>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- ABOUT -->
+<section id="about" class="sec">
+  <div class="wrap">
+    <div class="about-intro f">
+      <span class="sec-lbl">About</span>
+      <h2 class="sec-h">Analytics, leadership, and three years of accountability that came before the degree.</h2>
+    </div>
+    <div class="about-cols">
+      <div class="f d2">
+        <p class="ap">By 21 I was managing <strong>over 100 full-time, part-time, and seasonal employees</strong> as Lakefront Coordinator for the Winnetka Park District. Daily operations, staffing, Red Cross certifications, and direct coordination with insurance companies and management. Real responsibility, early.</p>
+        <p class="ap">That standard carried into Phi Delta Theta, where I moved from member to <strong>Risk Management Chairman</strong> to <strong>Chapter President</strong> at Arizona Alpha. And into my analytics internship at <strong>GainShare</strong>, where I built Tableau dashboards that gave non-technical stakeholders real-time campaign visibility for the first time.</p>
+      </div>
+      <div class="f d3">
+        <p class="ap">This summer I join <strong>FinTurk.io in Chicago</strong> on software development, automation, and analytics &mdash; bringing operational instincts and technical skills into a fast-moving fintech environment.</p>
+        <p class="ap">I show up, figure it out, and deliver. Not almost. Not close enough.</p>
+        <div class="sk-row">
+          <span class="sk">R</span><span class="sk">SQL</span><span class="sk">C / C++</span>
+          <span class="sk">HTML</span><span class="sk">Tableau</span><span class="sk">Excel</span>
+          <span class="sk">Eller &rsquo;27</span><span class="sk">Chicago</span><span class="sk">Red Cross Certified</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- EXPERIENCE -->
+<section id="experience" class="sec">
+  <div class="wrap">
+    <div class="exp-hd f">
+      <div>
+        <span class="sec-lbl">Experience</span>
+        <h2 class="sec-h">Every role had more at stake than the last.</h2>
+      </div>
+      <p class="exp-hd-note">From lifeguard to coordinator to president to intern &mdash; a consistent pattern of expanded responsibility.</p>
+    </div>
+
+    <!-- FINTURK -->
+    <div class="ei f">
+      <div>
+        <div class="ed">Jun 2026 &mdash; Present</div>
+        <div class="eo">FinTurk.io &middot; Chicago, IL</div>
+        <!--
+          FinTurk logo: finturkimage.png
+          If it renders well on white, use this:
+        -->
+        <img src="./finturkimage.png" alt="FinTurk.io" class="exp-img-contain" onerror="this.style.display='none'">
+      </div>
+      <div>
+        <div class="er">Software Development &amp; Automation Intern</div>
+        <p class="eb">Incoming. Working across software development, product testing, data analysis, and research at a fast-growing fintech firm. Reporting directly to Mitchell Bratina, CEO.</p>
+        <div class="ch"><span class="c">Software Dev</span><span class="c">Automation</span><span class="c">Analytics</span><span class="c">Fintech</span></div>
+      </div>
+    </div>
+
+    <!-- GAINSHARE -->
+    <div class="ei f">
+      <div>
+        <div class="ed">May &ndash; Aug 2025</div>
+        <div class="eo">GainShare Performance Marketing &middot; Chicago, IL</div>
+        <img src="./gainshareimage.jpg" alt="GainShare" class="exp-img-contain" onerror="this.style.display='none'">
+      </div>
+      <div>
+        <div class="er">Analytics Intern</div>
+        <p class="eb">Compiled data across all media channels and built internal Tableau dashboards for non-technical stakeholders. Made campaign performance visible in real time. The real skill in analytics is not the model &mdash; it is what happens when people who are not analysts can act on it.</p>
+        <!--
+          Gainshare dashboard image goes here when you have it:
+          <img src="./gainshare_dashboard.jpg" alt="GainShare Dashboard" class="exp-img" style="margin-top:14px;" onerror="this.style.display='none'">
+        -->
+        <div class="ch"><span class="c">Tableau</span><span class="c">SQL</span><span class="c">Dashboards</span><span class="c">Data Analysis</span></div>
+      </div>
+    </div>
+
+    <!-- CHAPTER PRESIDENT -->
+    <div class="ei f">
+      <div>
+        <div class="ed">Dec 2025 &mdash; Present</div>
+        <div class="eo">Phi Delta Theta &middot; Arizona Alpha</div>
+        <img src="./execphoto.jpg" alt="Phi Delta Theta Executive Board" class="exp-img" onerror="this.style.display='none'">
+      </div>
+      <div>
+        <div class="er">Chapter President</div>
+        <p class="eb">Elected following two terms as Risk Management Chairman. Responsible for chapter operations, member accountability, University compliance, and representation within Greek Life. Before this role I would have said I preferred doing things myself. I learned to delegate &mdash; and the chapter runs better for it.</p>
+        <div class="ch"><span class="c">Leadership</span><span class="c">Operations</span><span class="c">Risk Management</span><span class="c">Compliance</span></div>
+      </div>
+    </div>
+
+    <!-- RISK MANAGEMENT CHAIRMAN -->
+    <div class="ei f">
+      <div>
+        <div class="ed">Nov 2024 &ndash; Dec 2025</div>
+        <div class="eo">Phi Delta Theta &middot; Arizona Alpha</div>
+        <img src="./bobcrowd.png" alt="Chapter Event" class="exp-img" onerror="this.style.display='none'">
+      </div>
+      <div>
+        <div class="er">Risk Management Chairman</div>
+        <p class="eb">Coordinated safety protocols and University compliance for all social and house events. Worked directly with University Police, Risk Management, the Interfraternal Council, and Dean of Students to ensure all chapter activity maintained a safe environment for members and guests.</p>
+        <div class="ch"><span class="c">Risk Management</span><span class="c">Compliance</span><span class="c">Event Operations</span></div>
+      </div>
+    </div>
+
+    <!-- LAKEFRONT COORDINATOR -->
+    <div class="ei f">
+      <div>
+        <div class="ed">Jan 2024 &ndash; Aug 2025</div>
+        <div class="eo">Winnetka Park District &middot; Winnetka, IL</div>
+        <img src="./WPDimage.png" alt="Winnetka Park District" class="exp-img-contain" style="margin-bottom:10px;" onerror="this.style.display='none'">
+      </div>
+      <div>
+        <div class="er">Lakefront Coordinator</div>
+        <p class="eb">Head supervisor for all town lifeguard personnel &mdash; <strong>100+ full-time, part-time, and seasonal employees</strong>. Owned daily operations, staffing, and all operational requirements. Worked directly with the Red Cross, insurance companies, and management. Led weekly in-service certification training as a Red Cross Lifeguard and CPR/AED/First Aid Instructor. Coordinated daily with local camps for beach coverage.</p>
+        <div class="ch"><span class="c">100+ Employees</span><span class="c">Operations</span><span class="c">Red Cross Instructor</span><span class="c">Staffing</span></div>
+      </div>
+    </div>
+
+    <!-- LIFEGUARD MANAGER -->
+    <div class="ei f">
+      <div>
+        <div class="ed">Jun 2022 &ndash; Sep 2023</div>
+        <div class="eo">Winnetka Park District &middot; Winnetka, IL</div>
+        <img src="./WPDimage.png" alt="Winnetka Park District" class="exp-img-contain" style="margin-bottom:10px;" onerror="this.style.display='none'">
+      </div>
+      <div>
+        <div class="er">Lifeguard Manager</div>
+        <p class="eb">Tower Road and Maple Street Beach. Attained Red Cross Lifeguard, Waterfront Lifeguarding, and Lifeguard Management certifications. Supervised all water activities and camp groups.</p>
+        <div class="ch"><span class="c">Supervision</span><span class="c">Red Cross Certified</span></div>
+      </div>
+    </div>
+
+    <!-- GORDYS GAS DOCK -->
+    <div class="ei f">
+      <div>
+        <div class="ed">Jun &ndash; Aug 2021</div>
+        <div class="eo">Gordy&rsquo;s Marine &middot; Lake Geneva, WI</div>
+      </div>
+      <div>
+        <div class="er">Gas Dock Attendant</div>
+        <p class="eb">Fuel dock attendant at Gordy&rsquo;s Marine on Lake Geneva. Customer service, fuel operations, and dock management during peak summer season.</p>
+        <div class="ch"><span class="c">Customer Service</span><span class="c">Dock Operations</span></div>
+      </div>
+    </div>
+
+    <!-- GENEVA LAKE LIFEGUARD -->
+    <div class="ei f">
+      <div>
+        <div class="ed">May &ndash; Aug 2020</div>
+        <div class="eo">Geneva Lake Water Safety Patrol &middot; Lake Geneva, WI</div>
+        <img src="./WSP2.jpg" alt="Geneva Lake Water Safety Patrol" class="exp-img-contain" style="margin-bottom:10px;" onerror="this.style.display='none'">
+        <img src="./lgbeach_.jpg" alt="Lake Geneva Beach" class="exp-img" onerror="this.style.display='none'">
+      </div>
+      <div>
+        <div class="er">Lifeguard</div>
+        <p class="eb">Lake Geneva Public Beach. Where it started.</p>
+        <div class="ch"><span class="c">Lifeguarding</span><span class="c">Water Safety</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- VIDEO -->
+<section id="video">
+  <div class="wrap">
+    <span class="vl f">Persona Video</span>
+    <h2 class="vh f d2">Two minutes. The real version.</h2>
+    <p class="vs f d2">A professional persona video produced for BCOM 314 at Eller. The story behind the resume &mdash; what the experiences taught me and where they lead.</p>
+    <div class="vb f d3">
+      <!-- REPLACE YOUR_VIMEO_ID with your actual Vimeo video ID number -->
+      <iframe src="https://player.vimeo.com/video/YOUR_VIMEO_ID?color=ffffff&title=0&byline=0&portrait=0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- ROTATING QUOTES TICKER -->
+<div class="quote-ticker">
+  <div class="ticker-inner" id="ticker">
+    <span class="ticker-quote">&ldquo;Wes is a great teammate and good at getting tasks done efficiently.&rdquo;</span>
+    <span class="ticker-sep">&mdash;</span>
+    <span class="ticker-quote">&ldquo;Wes does not understand how much others appreciate his hard work and clear communication.&rdquo;</span>
+    <span class="ticker-sep">&mdash;</span>
+    <span class="ticker-quote">&ldquo;Wes needs to motivate others to do the tasks that he spends his time doing.&rdquo;</span>
+    <span class="ticker-sep">&mdash;</span>
+    <span class="ticker-quote">&ldquo;I think Wes could be a bit more of a hard ass when it comes to challenging others to be their best self.&rdquo;</span>
+    <span class="ticker-sep">&mdash;</span>
+    <span class="ticker-quote">&ldquo;It&rsquo;s important to separate leadership roles and friendship.&rdquo;</span>
+    <span class="ticker-sep">&mdash;</span>
+    <span class="ticker-quote">&ldquo;Wes is goated.&rdquo;</span>
+    <span class="ticker-sep">&mdash;</span>
+    <!-- Duplicate for seamless loop -->
+    <span class="ticker-quote">&ldquo;Wes is a great teammate and good at getting tasks done efficiently.&rdquo;</span>
+    <span class="ticker-sep">&mdash;</span>
+    <span class="ticker-quote">&ldquo;Wes does not understand how much others appreciate his hard work and clear communication.&rdquo;</span>
+    <span class="ticker-sep">&mdash;</span>
+    <span class="ticker-quote">&ldquo;Wes needs to motivate others to do the tasks that he spends his time doing.&rdquo;</span>
+    <span class="ticker-sep">&mdash;</span>
+    <span class="ticker-quote">&ldquo;I think Wes could be a bit more of a hard ass when it comes to challenging others to be their best self.&rdquo;</span>
+    <span class="ticker-sep">&mdash;</span>
+    <span class="ticker-quote">&ldquo;It&rsquo;s important to separate leadership roles and friendship.&rdquo;</span>
+    <span class="ticker-sep">&mdash;</span>
+    <span class="ticker-quote">&ldquo;Wes is goated.&rdquo;</span>
+    <span class="ticker-sep">&mdash;</span>
+  </div>
+</div>
+
+<!-- GROWTH -->
+<section id="growth" class="sec">
+  <div class="wrap">
+
+    <div class="g-intro f">
+      <div>
+        <span class="sec-lbl">Professional Growth</span>
+        <h2 class="sec-h">What the data says about how I operate.</h2>
+        <p class="sec-note" style="margin-top:10px;">7 respondents &middot; PRS, SPI, 360&deg; team evaluations &middot; BCOM 314</p>
+      </div>
+      <div class="g-intro-text f d2">
+        <p>BCOM 314 at Eller uses a structured Self-Perception Inventory, a Professional Reputation Survey completed by peers and colleagues, and 360&deg; team evaluations to map the gap between self-perception and actual reputation.</p>
+        <p><strong>My reputation closely matches my identity on results-orientation and follow-through.</strong> The growth areas are consistent across respondents: challenge others more, separate leadership from friendship when stakes are high, and own the impact I am already having.</p>
+      </div>
+    </div>
+
+    <!-- CORE VALUES -->
+    <div class="g-block f">
+      <h3>Core Values</h3>
+      <p>The Self-Perception Inventory is a structured self-assessment identifying personal values, communication tendencies, and work preferences. My core values &mdash; confirmed through close alignment with peer feedback:</p>
+      <div class="values-grid">
+        <span class="val-chip primary">Accountability</span>
+        <span class="val-chip primary">Deliver. Deliver.</span>
+        <span class="val-chip primary">Preparation</span>
+        <span class="val-chip">Clarity</span>
+        <span class="val-chip">Community</span>
+        <span class="val-chip">Independence</span>
+        <span class="val-chip">Growth</span>
+      </div>
+    </div>
+
+    <!-- BCS -->
+    <div class="bcs-wrap f">
+      <h3 style="font-family:'Playfair Display',serif;font-size:20px;font-weight:400;color:#111;margin-bottom:6px;">Behavioral Communication Style</h3>
+      <p style="font-size:13px;color:#aaa;margin-bottom:24px;">The BCS model maps communication onto two axes &mdash; Proactivity (how assertively you initiate and push) and Reactivity (how emotively you express and respond). Your intersection defines your quadrant.</p>
+
+      <div class="bcs-grid">
+        <div>
+          <div class="bcs-name">Driver</div>
+          <div class="bcs-sub">Higher Proactivity &middot; Lower Reactivity &middot; 5 of 7 respondents</div>
+          <div class="score-pair">
+            <div class="score-box">
+              <div class="score-lbl">Composite Proactivity</div>
+              <div class="score-num">+1.86</div>
+              <div class="score-meaning">Assertive, initiates, pushes forward</div>
+            </div>
+            <div class="score-box">
+              <div class="score-lbl">Composite Reactivity</div>
+              <div class="score-num neg">&minus;4.14</div>
+              <div class="score-meaning">Controlled, task-focused, low expressiveness</div>
+            </div>
+          </div>
+          <div class="bcs-text">
+            <p>A Driver style means I tend to <strong>initiate rather than wait, prioritize outcomes over process, and keep emotional expression controlled in professional settings.</strong> Peers consistently rated me as someone who moves fast, communicates directly, and follows through without needing external motivation.</p>
+            <p>The reactivity score of &minus;4.14 is notably low. Respondents see me as reserved and task-oriented in most professional contexts &mdash; which connects to feedback that I come across as harder to read until people know me better. Two respondents landed in the Analytical quadrant, reflecting a more methodical side that comes out in data and planning work.</p>
+          </div>
+        </div>
+        <div>
+          <div class="quad-label">Higher Reactivity</div>
+          <div class="quad">
+            <div class="qc"><div class="qc-n">Amiable</div><div class="qc-s">Lower Proactivity<br>Higher Reactivity</div></div>
+            <div class="qc"><div class="qc-n">Expressive</div><div class="qc-s">Higher Proactivity<br>Higher Reactivity</div></div>
+            <div class="qc"><div class="qc-n">Analytical</div><div class="qc-s">Lower Proactivity<br>Lower Reactivity</div></div>
+            <div class="qc active"><div class="qc-dot"></div><div class="qc-n">Driver</div><div class="qc-s">Higher Proactivity<br>Lower Reactivity</div></div>
+          </div>
+          <div class="quad-label-b">Lower Reactivity</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADJECTIVES -->
+    <div class="adj-wrap f">
+      <h3>How Respondents Describe Me</h3>
+      <div class="adj-cloud">
+        <span class="aw aw7">Well-Rounded</span>
+        <span class="aw aw6">Hard-Working</span>
+        <span class="aw aw5">Driven</span>
+        <span class="aw aw5">Leaderlike</span>
+        <span class="aw aw5">Self-Confident</span>
+        <span class="aw aw5">Trusting</span>
+        <span class="aw aw5">Involved</span>
+        <span class="aw aw4">Growth-Oriented</span>
+        <span class="aw aw4">Outgoing</span>
+        <span class="aw aw4">Easygoing</span>
+        <span class="aw aw4">Problem-Solver</span>
+        <span class="aw aw4">Idea-Generator</span>
+        <span class="aw aw4">Values Education</span>
+        <span class="aw aw4">Poised</span>
+        <span class="aw aw3">Empathetic</span>
+        <span class="aw aw3">Respects Authority</span>
+        <span class="aw aw3">Social</span>
+        <span class="aw aw2">Calm</span>
+        <span class="aw aw2">Caring</span>
+        <span class="aw aw2">Competitive</span>
+        <span class="aw aw2">Curious</span>
+        <span class="aw aw2">Good with Numbers</span>
+      </div>
+      <p class="adj-note">Word size reflects selection frequency across 7 respondents. Largest = selected by all 7.</p>
+    </div>
+
+    <!-- WCC -->
+    <div class="f" style="margin-bottom:16px;">
+      <h3 style="font-family:'Playfair Display',serif;font-size:20px;font-weight:400;color:#111;margin-bottom:8px;">Warmth, Competence, and Charisma</h3>
+      <p style="font-size:13px;color:#aaa;margin-bottom:14px;max-width:680px;">A framework for professional credibility. Ratings derived from PRS adjective selections and qualitative peer feedback.</p>
+      <div class="wcc-grid">
+        <div class="wcc-card">
+          <div class="wcc-dim">Warmth</div>
+          <div class="wcc-rating">High &mdash; with time</div>
+          <p class="wcc-text">Adjectives like Caring, Empathetic, and Trusting (5 of 7) confirm genuine warmth. The gap is in how quickly it registers. Respondents noted I come across as harder to read until they know me &mdash; warmth is there, it just takes a minute to surface.</p>
+        </div>
+        <div class="wcc-card">
+          <div class="wcc-dim">Competence</div>
+          <div class="wcc-rating">Strong &mdash; consistently</div>
+          <p class="wcc-text">The most consistent signal in the dataset. Well-Rounded (7/7), Hard-Working (6/7), Driven and Leaderlike (5/7). "Great teammate, good at getting tasks done efficiently." Problem-Solver and Idea-Generator both selected by 4 respondents independently.</p>
+        </div>
+        <div class="wcc-card">
+          <div class="wcc-dim">Charisma</div>
+          <div class="wcc-rating">Present &mdash; underused</div>
+          <p class="wcc-text">Multiple respondents noted I underestimate my own impact. The capability is clearly there &mdash; the gap is in claiming it. Charisma at this stage is less about performance and more about owning what is already visible to everyone else.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEAM CULTURE -->
+    <div class="tc-block f">
+      <h3>Team Culture</h3>
+      <p>My work-preference data points to <strong>structured, results-driven environments with clear roles and autonomous execution</strong>. 360&deg; evaluations flagged reliability and follow-through as consistent strengths throughout the semester.</p>
+      <p>The consistent development note: I sometimes complete work without enough check-ins, which can leave teammates uncertain about where things stand. I have addressed this through more deliberate communication as President. The feedback about separating leadership from friendship lives here too &mdash; in team contexts, high output combined with controlled emotional expression can make expectations feel ambiguous to people I am close to.</p>
+    </div>
+
+    <!-- CONSCIOUS COMPETENCY -->
+    <div class="g-block f">
+      <h3>Conscious Competency</h3>
+      <p style="margin-bottom:20px;">The Conscious Competency model tracks skill development across four stages &mdash; from not knowing what you don&rsquo;t know, to knowing and struggling, to knowing and doing well, to doing it without thinking. Applied to what the data actually surfaced:</p>
+      <div class="cc-grid">
+        <div class="cc-card">
+          <div class="cc-stage">Unconscious Competence</div>
+          <div class="cc-title">Getting things done</div>
+          <p class="cc-body">Results-orientation is deeply automatic. It shows up the same way across every context respondents knew me from &mdash; professional, academic, organizational. Nobody had to point it out because it just happens.</p>
+        </div>
+        <div class="cc-card">
+          <div class="cc-stage">Conscious Competence</div>
+          <div class="cc-title">Delegation and empowering others</div>
+          <p class="cc-body">I know how to delegate and actively practice it as President. It takes intentional effort and is not yet natural. Feedback confirms progress &mdash; it is not fully automatic yet.</p>
+        </div>
+        <div class="cc-card">
+          <div class="cc-stage">Conscious Incompetence</div>
+          <div class="cc-title">Self-advocacy and owning impact</div>
+          <p class="cc-body">Multiple respondents named this directly: I underestimate what I contribute. I am aware of it. The gap is closing but it is still something I have to actively work against in how I present and carry myself.</p>
+        </div>
+        <div class="cc-card">
+          <div class="cc-stage">No Clear Blind Spots</div>
+          <div class="cc-title">Self-perception aligned with reputation</div>
+          <p class="cc-body">No major gaps between how I see myself and how others experience me emerged from the data. The development areas are known and being worked on &mdash; none of them came as a surprise.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section id="portfolio" class="sec">
+  <div class="wrap">
+    <div class="port-hd f">
+      <span class="sec-lbl">Work Samples</span>
+      <h2 class="sec-h">Proof of work.</h2>
+      <p class="sec-note">Academic and professional. Context, skills, and reasoning for each. At least one authored solely by me.</p>
+    </div>
+    <div class="port-grid">
+
+      <div class="pc f">
+        <div class="pc-cat">Analytics &middot; Individual</div>
+        <div class="pc-name">Media Channel Dashboards &mdash; GainShare</div>
+        <p class="pc-desc">Built Tableau dashboards aggregating data across all media channels at GainShare. Non-technical stakeholders could see campaign performance in real time without touching a spreadsheet. Demonstrates ability to translate raw data into usable output for a non-analytical audience.</p>
+        <div class="pc-tags"><span class="pt">Tableau</span><span class="pt">SQL</span><span class="pt">Data Visualization</span></div>
+      </div>
+
+      <div class="pc f d2">
+        <div class="pc-cat">Academic &middot; Individual</div>
+        <div class="pc-name">Capital Budgeting Model &mdash; FIN 311</div>
+        <p class="pc-desc">Excel models covering NPV, IRR, MIRR, MACRS depreciation, and OCF for capital budgeting decisions. Built for accuracy and auditability. Demonstrates quantitative modeling applied to real financial decisions.</p>
+        <div class="pc-tags"><span class="pt">Excel</span><span class="pt">NPV / IRR</span><span class="pt">Financial Modeling</span></div>
+      </div>
+
+      <div class="pc f">
+        <div class="pc-cat">Technical &middot; Individual</div>
+        <div class="pc-name">FixQueue &mdash; Home Services App</div>
+        <p class="pc-desc">Full-stack home services marketplace prototype using Next.js, PostgreSQL, Prisma, Clerk authentication, and Stripe Connect. Built end-to-end to understand what product development actually involves at the technical level.</p>
+        <div class="pc-tags"><span class="pt">Next.js</span><span class="pt">PostgreSQL</span><span class="pt">Stripe Connect</span></div>
+      </div>
+
+      <div class="pc f d2">
+        <div class="pc-cat">Operations &middot; Leadership</div>
+        <div class="pc-name">Chapter Compliance System &mdash; Phi Delta Theta</div>
+        <p class="pc-desc">As Risk Management Chairman, built Excel-based compliance tracking, event risk frameworks, and operational checklists that kept the chapter in good standing with national and University requirements.</p>
+        <div class="pc-tags"><span class="pt">Operations</span><span class="pt">Excel</span><span class="pt">Risk Management</span></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="wrap">
+    <div class="cg">
+      <div class="f">
+        <h2 class="ch2">Get in touch.</h2>
+        <p class="cp">Looking for conversations with teams building in fintech, automation, and analytics. If you need someone who operates independently and figures things out &mdash; reach out.</p>
+        <div class="clinks">
+          <a class="clink" href="mailto:wcbak@arizona.edu"><div class="cdot"></div>wcbak@arizona.edu</a>
+          <a class="clink" href="https://www.linkedin.com/in/wes-baker-26b423183" target="_blank"><div class="cdot"></div>linkedin.com/in/wes-baker-26b423183</a>
+          <!-- REPLACE wesbaker with your actual GitHub username -->
+          <a class="clink" href="https://github.com/wesbaker" target="_blank"><div class="cdot"></div>github.com/wesbaker</a>
+        </div>
+      </div>
+      <!-- REPLACE YOUR_FORMSPREE_ID after signing up free at formspree.io -->
+      <form class="f d2" action="https://formspree.io/f/YOUR_FORMSPREE_ID" method="POST">
+        <div class="f2r">
+          <input type="text" name="name" placeholder="Name" required>
+          <input type="email" name="email" placeholder="Email" required>
+        </div>
+        <input type="text" name="subject" placeholder="Subject">
+        <textarea name="message" placeholder="What are you building?" required></textarea>
+        <button type="submit" class="fsub">Send &rarr;</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="ft">Wes Baker &mdash; Business Analytics, Eller College of Management, University of Arizona</span>
+  <span class="ft">&copy; 2026 &middot; <a href="https://www.linkedin.com/in/wes-baker-26b423183" target="_blank">LinkedIn</a></span>
+</footer>
+
+<script>
+  // Nav scroll
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => nav.classList.toggle('sc', scrollY > 12));
+
+  // Fade reveal
+  const obs = new IntersectionObserver(e => {
+    e.forEach(x => { if(x.isIntersecting) x.target.classList.add('on'); });
+  }, { threshold: 0.07 });
+  document.querySelectorAll('.f').forEach(el => obs.observe(el));
+
+  // Counters
+  function cnt(el) {
+    const t = parseInt(el.dataset.count); if(!t) return;
+    let n=0; const s=Math.ceil(t/40);
+    const tm=setInterval(()=>{ n=Math.min(n+s,t); el.textContent=n; if(n>=t)clearInterval(tm); },28);
+  }
+  const co = new IntersectionObserver(e => {
+    e.forEach(x=>{ if(x.isIntersecting){cnt(x.target);co.unobserve(x.target);} });
+  },{threshold:.5});
+  document.querySelectorAll('[data-count]').forEach(el=>co.observe(el));
+</script>
+</body>
+</html>
